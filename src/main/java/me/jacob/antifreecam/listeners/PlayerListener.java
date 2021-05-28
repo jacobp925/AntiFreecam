@@ -37,7 +37,7 @@ public class PlayerListener implements Listener {
         Player p = event.getPlayer();
         FreecamPlayer.remove(p.getUniqueId());
         if (p.hasPermission("antifreecam.admin")) {
-            plugin.getManager().getStaff().add(p);
+            plugin.getManager().getStaff().remove(p);
         }
     }
 
