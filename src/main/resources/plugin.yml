@@ -1,0 +1,9 @@
+name: AntiFreecam
+version: 1.0.0-SNAPSHOT
+author: jacob
+main: me.jacob.antifreecam.AntiFreecam
+depend: [ProtocolLib]
+commands:
+  antifreecam:
+    description: Manage AntiFreecam
+    usage: /<command>
