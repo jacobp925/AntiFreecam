@@ -5,6 +5,7 @@ import me.jacob.antifreecam.objects.FreecamPlayer;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -53,7 +54,7 @@ public class PlayerListener implements Listener {
                 Block currentBlock;
                 for (double d = 0; d <= 5; d += 0.01) {
                     //p.getWorld().playEffect(origin.clone().add(direction.clone().multiply(d)).toLocation(p.getWorld()), Effect.COLOURED_DUST, 0);
-                    if ((currentBlock = origin.clone().add(direction.clone().multiply(d)).toLocation(p.getWorld()).getBlock()).getType() != Material.AIR && !currentBlock.isLiquid()) {
+                    if ((currentBlock = origin.clone().add(direction.clone().multiply(d)).toLocation(p.getWorld()).getBlock()).getType() != Material.AIR && !currentBlock.isLiquid() && !(currentBlock.getState() instanceof Sign)) {
                         rayTraced = currentBlock;
                         break;
                     }
