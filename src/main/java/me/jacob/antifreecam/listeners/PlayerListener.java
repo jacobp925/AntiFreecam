@@ -1,8 +1,10 @@
 package me.jacob.antifreecam.listeners;
 
 import me.jacob.antifreecam.AntiFreecam;
+import me.jacob.antifreecam.objects.BoundingBox;
 import me.jacob.antifreecam.objects.FreecamPlayer;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
@@ -14,6 +16,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.material.Stairs;
 import org.bukkit.util.Vector;
 
 public class PlayerListener implements Listener {
@@ -52,9 +55,11 @@ public class PlayerListener implements Listener {
                 Vector direction = p.getEyeLocation().getDirection();
                 Block rayTraced = null;
                 Block currentBlock;
+                Material currentMat;
+                Location currentLoc;
                 for (double d = 0; d <= 5; d += 0.01) {
-                    //p.getWorld().playEffect(origin.clone().add(direction.clone().multiply(d)).toLocation(p.getWorld()), Effect.COLOURED_DUST, 0);
-                    if ((currentBlock = origin.clone().add(direction.clone().multiply(d)).toLocation(p.getWorld()).getBlock()).getType() != Material.AIR && !currentBlock.isLiquid() && !(currentBlock.getState() instanceof Sign)) {
+                    currentMat = (currentBlock = (currentLoc = origin.clone().add(direction.clone().multiply(d)).toLocation(p.getWorld())).getBlock()).getType();
+                    if (solidBlock(currentBlock, currentMat, currentLoc)) {
                         rayTraced = currentBlock;
                         break;
                     }
@@ -71,8 +76,24 @@ public class PlayerListener implements Listener {
         }
     }
 
+
     public String color(String s) {
         return ChatColor.translateAlternateColorCodes('&', s);
     }
 
+    public boolean solidBlock(Block block, Material material, Location location) {
+        //NOTE: inefficient and could be improved upon by not calculating a new aabb for the block every single time.. don't have time rn maybe ill do this later lol.
+        if (material == Material.AIR || block.isLiquid() || block.getState() instanceof Sign || block.getState().getData() instanceof Stairs) {
+            return false;
+        }
+        BoundingBox aabb = new BoundingBox(block);
+        if (location.getX() < aabb.getMin().getX() || location.getX() > aabb.getMax().getX()) {
+            return false;
+        } else if (location.getY() < aabb.getMin().getY() || location.getY() > aabb.getMax().getY()) {
+            return false;
+        } else if (location.getZ() < aabb.getMin().getZ() || location.getZ() > aabb.getMax().getZ()) {
+            return false;
+        }
+        return true;
+    }
 }
